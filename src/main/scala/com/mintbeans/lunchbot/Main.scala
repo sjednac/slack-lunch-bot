@@ -3,13 +3,18 @@ package com.mintbeans.lunchbot
 import com.mintbeans.lunchbot.config.ConfigModule
 import com.mintbeans.lunchbot.facebook.FacebookModule
 
+import scala.collection.JavaConverters._
+
 object Main extends App with ConfigModule with FacebookModule {
-  val marmolada = facebook.lastPost("MarmoladaChlebiKawa")
-  println(s"Marmolada:\n${marmolada}\n")
+  val facebookPages = config.getConfigList("facebook.pages").asScala
 
-  val lula  = facebook.lastPost("lulagdansk")
-  println(s"Lula:\n${lula}\n")
+  facebookPages.foreach { config =>
+    val id = config.getString("id")
+    val label = config.getString("label")
 
-  val otwARTa  = facebook.lastPost("otwArtagaleriasmaku")
-  println(s"otwARTa:\n${otwARTa}\n")
+    val post = facebook.lastPost(id)
+
+    println(s"### ${label} ###")
+    println(s"${post.message}\n")
+  }
 }
