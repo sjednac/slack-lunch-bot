@@ -19,7 +19,7 @@ class FacebookRestConnector(appId: String, appSecret: String) extends DefaultFac
     val time = post.getCreatedTime.toInstant.atZone(ZoneId.systemDefault).toLocalDateTime
     val msg  = post.getMessage
 
-    Facebook.Post(time, msg)
+    Facebook.Post(time, Option(msg))
   }
 
 }

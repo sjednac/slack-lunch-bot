@@ -9,5 +9,5 @@ trait Facebook {
 }
 
 object Facebook {
-  case class Post(time: LocalDateTime, message: String)
+  case class Post(time: LocalDateTime, message: Option[String])
 }

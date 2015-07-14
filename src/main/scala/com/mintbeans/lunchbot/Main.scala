@@ -15,6 +15,7 @@ object Main extends App with ConfigModule with FacebookModule {
     val post = facebook.lastPost(id)
 
     println(s"### ${label} ###")
-    println(s"${post.message}\n")
+    println(s"${post.message.getOrElse("No text content available.")}\n")
   }
+
 }
