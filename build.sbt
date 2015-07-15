@@ -1,4 +1,4 @@
-name := "lunch-bot"
+name := "slack-lunch-bot"
 
 organization := "com.mintbeans"
 
