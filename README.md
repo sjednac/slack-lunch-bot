@@ -1,3 +1,3 @@
-# Lunch Bot
+# Slack Lunch Bot
 
-A bot for fetching lunch menu announcements from **Facebook**.
+A [Slack](http://slack.com) bot for fetching lunch menu announcements from selected **Facebook** pages.
