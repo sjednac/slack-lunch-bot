@@ -20,6 +20,7 @@ libraryDependencies ++= {
   Seq(
     "com.typesafe"              %   "config"                      % "1.2.1",
     "com.restfb"                %   "restfb"                      % "1.13.0",
+    "com.flyberrycapital"       %%  "scala-slack"                 % "0.2.0",
     "ch.qos.logback"            %   "logback-classic"             % "1.1.1",
     "org.scalatest"             %%  "scalatest"                   % "2.2.5" % "test"
   )
