@@ -1,6 +1,7 @@
 package com.mintbeans.lunchbot.facebook
 
-import java.time.ZoneId
+import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
+import java.time.{LocalDateTime, ZoneId}
 
 import com.restfb.Version.VERSION_2_3
 import com.restfb._
@@ -12,10 +13,13 @@ class FacebookRestConnector(appId: String, appSecret: String) extends DefaultFac
 
   accessToken = obtainAppAccessToken(appId, appSecret).getAccessToken
 
-  override def lastPost(pageId: String): Facebook.Post = {
-    val feed = fetchConnection(s"${pageId}/posts", classOf[Post])
-    val post = feed.getData.asScala.head
+  override def lastPost(pageId: String, since: Option[LocalDateTime] = None): Facebook.Post = {
+    val feed = since match {
+      case None => fetchConnection(s"${pageId}/posts", classOf[Post])
+      case Some(date) => fetchConnection(s"${pageId}/posts", classOf[Post], Parameter.`with`("since", date.format(ISO_LOCAL_DATE_TIME)))
+    }
 
+    val post = feed.getData.asScala.head
     val time = post.getCreatedTime.toInstant.atZone(ZoneId.systemDefault).toLocalDateTime
     val msg  = post.getMessage
 
