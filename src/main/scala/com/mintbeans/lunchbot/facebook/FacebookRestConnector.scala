@@ -13,17 +13,21 @@ class FacebookRestConnector(appId: String, appSecret: String) extends DefaultFac
 
   accessToken = obtainAppAccessToken(appId, appSecret).getAccessToken
 
-  override def lastPost(pageId: String, since: Option[LocalDateTime] = None): Facebook.Post = {
+  override def lastPost(pageId: String, since: Option[LocalDateTime] = None): Option[Facebook.Post] = {
     val feed = since match {
       case None => fetchConnection(s"${pageId}/posts", classOf[Post])
       case Some(date) => fetchConnection(s"${pageId}/posts", classOf[Post], Parameter.`with`("since", date.format(ISO_LOCAL_DATE_TIME)))
     }
 
-    val post = feed.getData.asScala.head
-    val time = post.getCreatedTime.toInstant.atZone(ZoneId.systemDefault).toLocalDateTime
-    val msg  = post.getMessage
+    feed.getData.asScala.toList.headOption match {
+      case None => None
+      case Some(post) => {
+        val time = post.getCreatedTime.toInstant.atZone(ZoneId.systemDefault).toLocalDateTime
+        val msg  = post.getMessage
 
-    Facebook.Post(time, Option(msg))
+        Some(Facebook.Post(time, Option(msg)))
+      }
+    }
   }
 
 }

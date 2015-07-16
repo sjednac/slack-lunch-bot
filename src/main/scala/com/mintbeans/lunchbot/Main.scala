@@ -16,9 +16,11 @@ object Main extends App with ConfigModule with SlackModule with FacebookModule {
     val id = config.getString("id")
     val label = config.getString("label")
 
-    val post = facebook.lastPost(id, since)
+    facebook.lastPost(id, since) match {
+      case None => s"\n*** ${label} ***\nNo menu available yet.\n"
+      case Some(post) => s"\n*** ${label} ***\n${post.message.getOrElse("No text content available.")}\n"
+    }
 
-    s"\n*** ${label} ***\n${post.message.getOrElse("No text content available.")}\n"
   }).foldLeft("### Dinner options ###\n")((m,c) => m + c)
 
   //NOTE: You'll need to invite your bot to the target channel (implied by as_user=true, which is required for

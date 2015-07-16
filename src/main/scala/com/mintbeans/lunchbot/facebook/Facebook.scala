@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 import com.mintbeans.lunchbot.facebook.Facebook.Post
 
 trait Facebook {
-  def lastPost(pageId: String, since: Option[LocalDateTime] = None): Post
+  def lastPost(pageId: String, since: Option[LocalDateTime] = None): Option[Post]
 }
 
 object Facebook {
