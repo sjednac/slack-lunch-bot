@@ -16,7 +16,9 @@ class FacebookRestConnector(appId: String, appSecret: String) extends DefaultFac
   override def lastPost(page: Facebook.Page, since: Option[LocalDateTime] = None): Option[Facebook.Post] = {
     val feed = since match {
       case None => fetchConnection(s"${page.id}/posts", classOf[Post])
-      case Some(date) => fetchConnection(s"${page.id}/posts", classOf[Post], Parameter.`with`("since", date.format(ISO_LOCAL_DATE_TIME)))
+      case Some(date) => fetchConnection(s"${page.id}/posts", classOf[Post],
+                                         Parameter.`with`("since", date.format(ISO_LOCAL_DATE_TIME)),
+                                         Parameter.`with`("fields", List("id", "message", "created_time", "full_picture").asJava))
     }
 
     feed.getData.asScala.toList.headOption match {
@@ -24,8 +26,9 @@ class FacebookRestConnector(appId: String, appSecret: String) extends DefaultFac
       case Some(post) => {
         val time = post.getCreatedTime.toInstant.atZone(ZoneId.systemDefault).toLocalDateTime
         val msg  = post.getMessage
+        val pic  = post.getFullPicture
 
-        Some(Facebook.Post(time, Option(msg)))
+        Some(Facebook.Post(time, Option(msg), Option(pic)))
       }
     }
   }
