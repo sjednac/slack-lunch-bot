@@ -3,6 +3,7 @@ package com.mintbeans.lunchbot
 import java.time.LocalDate
 
 import com.mintbeans.lunchbot.config.ConfigModule
+import com.mintbeans.lunchbot.facebook.Facebook.Page
 import com.mintbeans.lunchbot.facebook.FacebookModule
 import com.mintbeans.lunchbot.slack.SlackModule
 
@@ -13,12 +14,11 @@ object Main extends App with ConfigModule with SlackModule with FacebookModule {
 
   val since = Some(LocalDate.now.atStartOfDay)
   val message = facebookPages.map({ config =>
-    val id = config.getString("id")
-    val label = config.getString("label")
+    val page = Page(config.getString("id"), config.getString("label"))
 
-    facebook.lastPost(id, since) match {
-      case None => s"\n*** ${label} ***\nNo menu available yet.\n"
-      case Some(post) => s"\n*** ${label} ***\n${post.message.getOrElse("No text content available.")}\n"
+    facebook.lastPost(page, since) match {
+      case None => s"\n*** ${page.label} ***\nNo menu available yet.\n"
+      case Some(post) => s"\n*** ${page.label} ***\n${post.message.getOrElse("No text content available.")}\n"
     }
 
   }).foldLeft("### Dinner options ###\n")((m,c) => m + c)
