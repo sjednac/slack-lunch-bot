@@ -17,5 +17,5 @@ object Main extends App with ConfigModule with SlackModule with FacebookModule {
 
   //NOTE: You'll need to invite your bot to the target channel (implied by as_user=true, which is required for
   //the bot name/icon to be displayed properly)
-  slack.chat.postMessage(config.getString("slack.channel"), message, Map("as_user" -> "true"))
+  slack.chat.postMessage(slackChannel, message, Map("as_user" -> "true"))
 }
