@@ -6,7 +6,15 @@ version := "0.1-SNAPSHOT"
 
 scalaVersion := "2.11.7"
 
+javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint")
+
 scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation", "-encoding", "utf8")
+
+initialize := {
+  val _ = initialize.value
+  if (sys.props("java.specification.version") != "1.8")
+    sys.error("Java 8 is required for this project.")
+}
 
 mainClass := Some("com.mintbeans.lunchbot.Main")
 
