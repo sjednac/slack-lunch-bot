@@ -8,4 +8,6 @@ trait SlackModule {
 
   lazy val slack = new SlackClient(config.getString("slack.apiToken")).connTimeout(config.getInt("slack.connectionTimeout")).readTimeout(config.getInt("slack.readTimeout"))
 
+  lazy val slackChannel = config.getString("slack.channel")
+
 }
