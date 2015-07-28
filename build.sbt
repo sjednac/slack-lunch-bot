@@ -34,6 +34,7 @@ libraryDependencies ++= {
     "com.typesafe.akka"         %%  "akka-actor"                  % akkaVersion,
     "com.typesafe.akka"         %%  "akka-slf4j"                  % akkaVersion,
     "com.typesafe.akka"         %%  "akka-testkit"                % akkaVersion   % "test",
+    "com.enragedginger"         %%  "akka-quartz-scheduler"       % "1.4.0-akka-2.3.x",
     "junit"                     %   "junit"                       % "4.12"        % "test",
     "org.scalatest"             %%  "scalatest"                   % "2.2.5"       % "test"
   )
