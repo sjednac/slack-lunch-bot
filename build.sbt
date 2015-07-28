@@ -41,3 +41,14 @@ libraryDependencies ++= {
 }
 
 enablePlugins(JavaAppPackaging)
+
+mappings in Universal <+= (packageBin in Compile, sourceDirectory ) map { (_, src) =>
+    src / "main" / "resources" / "reference.conf" -> "conf/application.conf.example"
+}
+
+javaOptions in Universal ++= Seq(
+  "-J-Xmx64m",
+  "-J-Xms64m"
+)
+
+bashScriptExtraDefines += """addJava "-Dconfig.file=${app_home}/../conf/application.conf""""
