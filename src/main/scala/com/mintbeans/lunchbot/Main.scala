@@ -11,7 +11,7 @@ import com.typesafe.akka.extension.quartz.QuartzSchedulerExtension
 object Main extends App with ConfigModule with SlackModule with FacebookModule {
   val system = ActorSystem("lunchbot", config)
   val scheduler = QuartzSchedulerExtension(system)
-  val announcer = system.actorOf(Props(classOf[Announcer], facebook, facebookPages, slack, slackChannel))
+  val announcer = system.actorOf(Props(classOf[Announcer], config.getMillis("lunch.duration"), facebook, facebookPages, slack, slackChannel))
 
   scheduler.schedule("LunchTime", announcer, AnnounceLunchMenu)
 }

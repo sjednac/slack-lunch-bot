@@ -16,6 +16,7 @@ import scala.concurrent.duration._
 object Announcer {
   object AnnounceLunchMenu
   object ResendChannelMessages
+  object LunchAnnouncementTimeout
 
   implicit class SlackMessageFormat(sp: ScrappedPost) {
     def slackMessage: String = {
@@ -31,20 +32,21 @@ object Announcer {
   }
 }
 
-class Announcer(facebook: Facebook, pages: Set[Page], slack: SlackClient, channel: String) extends Actor with ActorLogging {
+class Announcer(lunchDuration: FiniteDuration, facebook: Facebook, pages: Set[Page], slack: SlackClient, channel: String) extends Actor with ActorLogging {
   require(!pages.isEmpty, "page list must not be empty!")
 
   override def receive: Receive = awaitingLunchPeriod
 
   def awaitingLunchPeriod: Receive = {
     case AnnounceLunchMenu => {
-      log.info("Announcing {} delicious pages to {}", pages.size, channel)
+      log.info("Announcing {} delicious pages to {}. Lunch duration: {}", pages.size, channel, lunchDuration)
 
       val scrappers = pages.map(page => newScrapper(page))
       val publisher = newPublisher
       val queuedMessages = Set[ChannelMessage]()
       val resendSchedule = context.system.scheduler.schedule(2 seconds, 2 seconds, self, ResendChannelMessages)
 
+      context.system.scheduler.scheduleOnce(lunchDuration, self, LunchAnnouncementTimeout)
       context.become(announcingLunch(scrappers, publisher, queuedMessages, resendSchedule))
     }
   }
@@ -80,6 +82,14 @@ class Announcer(facebook: Facebook, pages: Set[Page], slack: SlackClient, channe
       }
     }
     case ResendChannelMessages => queuedMessages.foreach(msg => publisher ! msg)
+    case LunchAnnouncementTimeout => {
+      log.info("Lunch announcement timeout with {} scrappers still running and {} undelivered messages.", scrappers.size, queuedMessages.size)
+
+      scrappers.foreach(scrapper => scrapper ! PoisonPill)
+      publisher ! PoisonPill
+
+      context.become(awaitingLunchPeriod)
+    }
   }
 
   def newScrapper(page: Page): ActorRef = {
