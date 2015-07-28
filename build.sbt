@@ -16,7 +16,7 @@ initialize := {
     sys.error("Java 8 is required for this project.")
 }
 
-mainClass := Some("com.mintbeans.lunchbot.Main")
+mainClass in Compile := Some("com.mintbeans.lunchbot.Main")
 
 resolvers ++= Seq(
   "Sonatype Snapshots"  at "https://oss.sonatype.org/content/repositories/snapshots/",
