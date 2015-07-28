@@ -43,7 +43,11 @@ libraryDependencies ++= {
 enablePlugins(JavaAppPackaging)
 
 mappings in Universal <+= (packageBin in Compile, sourceDirectory ) map { (_, src) =>
-    src / "main" / "resources" / "reference.conf" -> "conf/application.conf.example"
+  src / "main" / "resources" / "reference.conf" -> "conf/application.conf.example"
+}
+
+mappings in Universal <+= (packageBin in Compile, sourceDirectory ) map { (_, src) =>
+  src / "main" / "resources" / "logback.xml" -> "conf/logback.xml"
 }
 
 javaOptions in Universal ++= Seq(
@@ -52,3 +56,5 @@ javaOptions in Universal ++= Seq(
 )
 
 bashScriptExtraDefines += """addJava "-Dconfig.file=${app_home}/../conf/application.conf""""
+
+bashScriptExtraDefines += """addJava "-Dlogback.configurationFile=${app_home}/../conf/logback.xml""""
