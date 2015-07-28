@@ -9,7 +9,7 @@ import scala.concurrent.duration.FiniteDuration
 trait ConfigModule {
   lazy val config = ConfigFactory.load()
 
-  implicit class ConfigDuration(val c: Config) {
-    def getMillis(path: String): FiniteDuration = FiniteDuration(config.getDuration(path, MILLISECONDS), MILLISECONDS)
+  implicit class ConfigDuration(cfg: Config) {
+    def getMillis(path: String): FiniteDuration = FiniteDuration(cfg.getDuration(path, MILLISECONDS), MILLISECONDS)
   }
 }
